@@ -20,6 +20,7 @@ class Image_data:
     def __init__(self, path):
         
         img = cv2.imread(path)
+        img = cv2.resize(img, (1980, 1080))
         img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)/255.0
         self.img = img        
         
@@ -84,8 +85,8 @@ class Shape_work:
         # h_remaining: represents the remaining pixels in vertical direction
         # w_remaining: represents the remaining pixels in horizontal  direction        
         
-        h_remaining = h -h_covered
-        w_remaining = w- w_covered
+        h_remaining = h - h_covered
+        w_remaining = w - w_covered
         
         # print commands for debugging and sanity check          
         # print(f"h_remaining is {h_remaining}")
@@ -274,7 +275,7 @@ def h_w_neighbours_index (h,w,h_org,w_org,h_end,w_end):
 if __name__ == "__main__":
     
     ## getting image data from images path
-    file_folder = "./Given_image_path/"
+    file_folder = "./DBIrepo/Meng-699-Image-Banding-detection/Demo/Given_image_path/"
     
     # Initialzing dictinoary to store scores for each image
     dict_score = {}
@@ -310,13 +311,14 @@ if __name__ == "__main__":
     
     # loading the trained CNN patches model
     ## model naem to be changed and experimented
-    model = tf.keras.models.load_model('./model_512_batches_27july2020_epoch14/')
+    model = tf.keras.models.load_model('.\DBIrepo\Meng-699-Image-Banding-detection\Demo\CNN_classifier')
     
     # Iterating over the files in file_folder
     for file in os.listdir(file_folder):
         
             # reading the file data and extarting pixel data in form numpy arrays
             path = file_folder+file
+            print(path)
             obj = Image_data(path)
             image_data = obj.np_data()
             
@@ -403,7 +405,7 @@ if __name__ == "__main__":
             # Printing scores for each file
             print(f"score for {file} is {overall_score}")
             
-            dict_score[file] = final_score
+            dict_score[file] = overall_score
             df = pd.DataFrame([dict_score]).T
             
             # saving results in a csv file
